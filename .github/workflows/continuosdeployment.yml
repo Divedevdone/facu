@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Continuous deployment
 on: 
    pull_request:
      branches: 
@@ -16,7 +16,7 @@ jobs:
         with:
           name: projetozipado.zip
           path: 
-            '**.py'
+            "**.py"
             
         
   deploy:
