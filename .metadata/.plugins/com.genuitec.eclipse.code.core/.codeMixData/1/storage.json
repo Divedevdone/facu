@@ -1,0 +1,14 @@
+{
+    "telemetry.machineId": "e1c84acea7b3cea31b6e13d9d42beb61182b3c5fe5df209fc9cdcb63cbcc8106",
+    "openedPathsList": {
+        "workspaces3": [
+            {
+                "id": "1f9ebfc63f86d99c62424d1eb5ae453b",
+                "configURIPath": "file:///c%3A/Users/PlayHard/Documents/Puc/DevOps/.metadata/codemix.code-workspace"
+            }
+        ],
+        "files2": []
+    },
+    "theme": "vs-dark",
+    "themeBackground": "#1e1e1e"
+}

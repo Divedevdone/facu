@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;DockerFile/src/DockerFile.py&apos; to &apos;main.py&apos;" description="Rename resource &apos;DockerFile.py&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/DockerFile.py" name="main.py" stamp="1742860963715" updateReferences="true"/>
+</session>
