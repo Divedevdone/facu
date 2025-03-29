@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;DockerFile/src/DockerFile.py&apos;" deleteContents="false" description="Delete resource &apos;DockerFile/src/DockerFile.py&apos;" element1="/DockerFile/src/DockerFile.py" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1742860530579"/>&#x0A;<refactoring comment="Delete resource &apos;DockerFile/src/NewFile.py&apos;" deleteContents="false" description="Delete resource &apos;DockerFile/src/NewFile.py&apos;" element1="/DockerFile/src/NewFile.py" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1742860644035"/>
+</session>
