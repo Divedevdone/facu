@@ -1,10 +1,30 @@
-FROM python:3
+import random
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-WORKDIR /usr/src/app
+app = FastAPI()
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+class Estudante(BaseModel):
+    name: str
+    curso: str
+    ativo: bool
 
-COPY . .
+@app.get("/helloworld")
+async def root():
+    return {"message": "Hello World"}
 
-CMD [ "python", "./main.py" ]
+@app.get("/funcaoteste")
+async def funcaoteste():
+    return {"teste": True, "num_aleatorio": random.randint(0, 57000)}
+
+@app.post("/estudantes/cadastro")
+async def create_estudante(estudante: Estudante):
+    return estudante
+
+@app.put("/estudantes/update/{id_estudante}")
+async def update_item(id_estudante: int):
+    return id_estudante > 0
+
+@app.delete("/estudantes/delete/{id_estudante}")
+async def delete_estudante(id_estudante: int):
+    return id_estudante > 0
