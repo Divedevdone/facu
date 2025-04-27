@@ -1,7 +1,8 @@
-from src.main import root, funcaoteste, Estudante, update_estudante, delete_estudante # Importar funções específicas
+from src.main import root, funcaoteste, Estudante, update_estudante, delete_estudante, create_estudante # Importar funções específicas
 from unittest.mock import patch
 import pytest
 import pytest_asyncio
+
 
 @pytest.mark.asyncio
 async def test_root():
