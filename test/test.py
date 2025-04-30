@@ -2,6 +2,7 @@ from src.main import root, funcaoteste, Estudante, update_estudante, delete_estu
 from unittest.mock import patch
 import pytest
 import pytest_asyncio
+from src.main import status_estudante
 
 @pytest.mark.asyncio
 async def test_root():
@@ -33,6 +34,18 @@ async def test_update_estudante_positivo():
     estudante_teste = Estudante(name="Atualizado", curso="Curso Atualizado", ativo=True)
     result = await update_estudante(10, estudante_teste)
     assert result
+
+@pytest.mark.asyncio
+async def test_status_estudante():
+    estudante_ativo = Estudante(name="Ana", curso="Direito", ativo=True)
+    estudante_inativo = Estudante(name="Bruno", curso="Engenharia", ativo=False)
+
+    ativo_result = await status_estudante(estudante_ativo)
+    inativo_result = await status_estudante(estudante_inativo)
+
+    assert ativo_result == {"status": "Ativo", "nome": "Ana"}
+    assert inativo_result == {"status": "Inativo", "nome": "Bruno"}
+
 
 @pytest.mark.asyncio
 async def test_delete_estudante_negativo():
