@@ -31,6 +31,14 @@ async def update_estudante(id_estudante: int, estudante: Estudante):
         "atualizado_para": estudante.dict()
     }
 
+@app.post("/estudantes/status")
+async def status_estudante(estudante: Estudante):
+    if estudante.ativo:
+        return {"status": "Ativo", "nome": estudante.name}
+    else:
+        return {"status": "Inativo", "nome": estudante.name}
+
+
 @app.delete("/estudantes/delete/{id_estudante}")
 async def delete_estudante(id_estudante: int):
     return id_estudante > 0

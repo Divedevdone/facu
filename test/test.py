@@ -35,6 +35,18 @@ async def test_update_estudante_positivo():
     assert result
 
 @pytest.mark.asyncio
+async def test_status_estudante():
+    estudante_ativo = Estudante(name="Ana", curso="Direito", ativo=True)
+    estudante_inativo = Estudante(name="Bruno", curso="Engenharia", ativo=False)
+
+    ativo_result = await status_estudante(estudante_ativo)
+    inativo_result = await status_estudante(estudante_inativo)
+
+    assert ativo_result == {"status": "Ativo", "nome": "Ana"}
+    assert inativo_result == {"status": "Inativo", "nome": "Bruno"}
+
+
+@pytest.mark.asyncio
 async def test_delete_estudante_negativo():
     result = await delete_estudante(-5)
     assert not result
