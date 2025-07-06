@@ -127,6 +127,34 @@
 </head>
 
 <body>
+    <script>
+        async function enviarParaFila(email) {
+            const filaUrl = "https://armazenamentoweb13184.queue.core.windows.net/matriculas/messages?sv=..."; // SAS Token aqui
+            const xmlBody = `<QueueMessage><MessageText>${email}</MessageText></QueueMessage>`;
+
+            const response = await fetch(filaUrl, {
+                method: "POST",
+                headers: {
+                    "x-ms-date": new Date().toUTCString(),
+                    "x-ms-version": "2020-10-02",
+                    "Content-Type": "application/xml"
+                },
+                body: xmlBody
+            });
+
+            if (response.ok) {
+                console.log("Mensagem enviada à fila com sucesso!");
+            } else {
+                console.error("Erro ao enviar para a fila:", await response.text());
+            }
+        }
+
+        document.getElementById("registerEmailBtn").addEventListener("click", () => {
+            const email = document.getElementById("emailInput").value;
+            enviarParaFila(email);
+        });
+    </script>
+
     <header>
         <h1>Arquitetura de Matrícula Online</h1>
         <p>por Leonardo Costa de Carvalho</p>
