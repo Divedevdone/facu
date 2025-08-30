@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educação Digital - São José dos Pinhais</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+
+    <div id="content2" class="section hidden" onclick="openSection('nucleo')">
+        <h1>Núcleo de educação digital</h1>
+        <p>Documentos e informações sobre a estrutura e funcionamento do núcleo de Educação digital do
+            município.</p>
+        <div class="feature-highlight">
+            <strong>🎯 Recursos:</strong> Organogramas, diretrizes, protocolos
+        </div>
+        <div>
+            <a href="https://prefeitura.sjp.pr.gov.br/portal" target="_blank" class="botao-azul">
+                +
+            </a>
+        </div>
+        <div class="footer">
+            <p>SEMED | Realização: Ministério da Educação</p>
+        </div>
+    </div>
+
+    <!-- Robozinho mascote -->
+    <div class="robot-mascot" onclick="showMascotMessage()" title="Clique para receber dicas de navegação">
+        🤖
+    </div>
+
+    <!-- Modal -->
+    <div id="mascotModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>👋 Olá, eu sou o RoboEdu!</h2>
+            <p>Sou seu assistente virtual! Clique nas abas coloridas acima para explorar todos os recursos educacionais
+                disponíveis.</p>
+            <p><strong>💡 Dica:</strong> Use os cards interativos para navegar facilmente entre as seções!</p>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button onclick="closeModal()"
+                    style="background: #42519C; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer;">Entendi!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+<footer class="footer">
+    <span>@L3 - 2025 Prefeitura de São José dos Pinhais</span>
+    <img src="semed.png" class="footer-logo-right">
+    <img src="roboEdu.png" class="footer-logo-left">
+</footer>
+
+</html>
