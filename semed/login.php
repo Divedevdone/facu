@@ -1,8 +1,9 @@
 <?php
 session_start();
-include 'conexao.php';
+include 'conexao.php'; // conexão com db-semed
 
 $mensagem = "";
+
 
 // Se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -37,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
         /* Header */
 .header {
@@ -56,8 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 .logo-semed {
     position: fixed;
     top: 1px;
-    right: 620px;
-    width: 125px;
+    right: 580px;
+    width: 210px;
     height: auto;
     z-index: 100;
 }
@@ -128,6 +130,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 10px;
             font-weight: bold;
         }
+        .fab-voltar {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #1976d2, #115293);
+    box-shadow: 0 8px 20px rgba(3, 64, 120, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    font-size: 28px;
+    text-decoration: none;
+    z-index: 9999;
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.fab-voltar:active {
+    transform: scale(.96);
+}
+
+.fab-voltar:hover {
+    box-shadow: 0 12px 30px rgba(3, 64, 120, 0.28);
+}
+
+/* Rótulo do botão "Voltar para início" */
+.fabLabel-voltar {
+    position: fixed;
+    bottom: 90px;
+    left: 24px;
+    background-color: #333;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+}
+
+
         .link-voltar {
             display: block;
             text-align: center;
@@ -135,17 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-decoration: none;
             color: #42519C;
         }
-        /* Rodapé */
-.footer-content {
-    position: fixed;
-    top: 740px;
-    right: 460px;
-    text-align: center;
-    font-size: 14px;
-    width: 35%;
-    transition: all 0.4s ease;
-    font-size: 20px;
-}
+
 
 /* Media Queries */
 @media (min-width: 481px) and (max-width: 768px) { /* celular */
@@ -154,7 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     left: 190px;
   }
   .footer-content {
-    font-size: 16px; /* Ajuste do tamanho da fonte */
+    font-size: 12px; /* Ajuste do tamanho da fonte */
     top:500px;
     left: 165px;
   }
@@ -162,23 +197,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 @media (max-width: 480px) { /* tablet */
   .logo-semed {
-    width: 80px; /* Ajuste do tamanho da logo */
+    width: 70px; /* Ajuste do tamanho da logo */
     top: 10px; /* Ajuste da posição */
     left: 80px;
   }
   .footer-content {
-    font-size: 14px; /* Ajuste do tamanho da fonte */
+    font-size: 12px; /* Ajuste do tamanho da fonte */
     top:10px;
     left: 420px;
   }
 }
     </style>
+    <link rel="icon" type="image/png" href="../favicon.png">
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="nav-container">
-            <div class="cadastro"><a href="cadastrar.php" class="link-voltar">Cadastrar</a></div>
             <nav>
                 <ul class="nav-menu">
                     
@@ -190,6 +225,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <h2>Login</h2>
         <form action="login.php" method="post">
+            <label for="email">E-mail:</label>
+            <input type="email" name="email" id="email" required>
+            
             <label for="usuario">Usuário:</label>
             <input type="text" name="usuario" id="usuario" required>
 
@@ -203,12 +241,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="mensagem"><?= $mensagem ?></div>
         <?php endif; ?>
 
-        <a href="index.php" class="link-voltar">⬅ Voltar para início</a>
+        <a href="cadastrar.php" class="link-voltar">Cadastrar</a>
+        <br>
+        <a href="recuperar.php" class="link-voltar">Esqueci minha senha</a>
+
     </div>
+    
     <div>
                 <img src="semed.png" alt="Logo SEMED" class="logo-semed">
                 <div style="font-size: 0.8rem; margin-top: 0rem;"></div>
             </div>
+            <!-- Botão flutuante para voltar ao início -->
+    <a href="index.php" id="backToTop-voltar" class="fab-voltar" aria-label="Voltar">⬅</a>
+    <div id="backToTopLabel-voltar" class="fabLabel-voltar">Voltar para início</div>
 
             <div class="footer-content">
                 <p>SEMED | Secretaria municipal de educação</p>

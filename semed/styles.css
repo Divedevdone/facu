@@ -59,15 +59,15 @@ body {
     top: 350px;
     left: 640px;
     font-size: 20px;
-    color: #1b9284 !important;
+    color: #42519c !important;
 }
 
 /* Logos */
 .logo-eduDigital {
     position: fixed;
-    top: 150px;
-    right: 460px;
-    width: 200px;
+    top: 80px;
+    right: 420px;
+    width: 270px;
     height: auto;
     z-index: 100;
 
@@ -75,17 +75,17 @@ body {
 
 .logo-semed {
     position: fixed;
-    top: 400px;
+    top: 430px;
     right: 200px;
-    width: 150px;
+    width: 370px;
     z-index: 100;
 }
 
 .logo-robo {
     position: fixed;
-    top: 440px;
-    right: 800px;
-    width: 90px;
+    top: 435px;
+    right: 725px;
+    width: 240px;
     z-index: 100;
 }
 
@@ -161,32 +161,32 @@ body {
 
 .tab:nth-child(2) {
     left: 35px;
-    background: #C8A600;
+    background: #65a2f1;
 }
 
 .tab:nth-child(3) {
     left: 70px;
-    background: #2E7D32;
+    background: #004AAD;
 }
 
 .tab:nth-child(4) {
     left: 105px;
-    background: #0097A7;
+    background: #65a2f1;
 }
 
 .tab:nth-child(5) {
     left: 140px;
-    background: #D4AF37;
+    background: #004AAD;
 }
 
 .tab:nth-child(6) {
     left: 175px;
-    background: rgb(237, 86, 4);
+    background: #65a2f1;
 }
 
 .tab:nth-child(7) {
     left: 210px;
-    background: #64229e;
+    background: #004AAD;
 }
 
 /* hover */
@@ -207,10 +207,10 @@ body {
 }
 
 .content h1 {
-    color: #004D40;
+    color: #42519c;
     position: absolute;
     top: 80px;
-    left: 700px;
+    left: 690px;
     font-size: 40px;
 }
 
@@ -223,15 +223,15 @@ body {
 /* Robô mascote */
 .robot-mascot {
     position: fixed;
-    bottom: 100px;
-    right: 30px;
-    width: 120px;
-    height: 120px;
+    bottom: 60px;
+    right: 70px;
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, #E1DC53, #DA0B16);
     border-radius: 50%;
     display: flex;
     align-items: center;
-    font-size: 2.5rem;
+    font-size: 4.5rem;
     justify-content: center;
     cursor: pointer;
     z-index: 1000;
@@ -361,7 +361,7 @@ body {
 
 .btn-add {
     position: fixed;
-    bottom: 230px;
+    bottom: 140px;
     right: 110px;
     width: 30px;
     height: 30px;
@@ -403,8 +403,8 @@ body {
 /* Botão de toggle RoboEdu */
 .robo-toggle {
     position: fixed;
-    bottom: 230px;
-    right: 40px;
+    bottom: 140px;
+    right: 60px;
     width: 30px;
     height: 30px;
     background: linear-gradient(135deg, #42519C, #2f3a75);
@@ -508,8 +508,8 @@ body {
 
     .btn-add {
         position: fixed;
-        bottom: 205px;
-        right: 65px;
+        bottom: 130px;
+        right: 140px;
         width: 30px;
         height: 30px;
         background: linear-gradient(135deg, #acb3d3, #fefeff);
@@ -526,19 +526,19 @@ body {
 
 
     .content h1 {
-        color: #004D40;
+        color: #42519c;
         position: absolute;
-        top: 20px;
+        top: 60px;
         left: 240px;
         font-size: 30px;
     }
 
     .subtitle {
         position: absolute;
-        top: 320px;
+        top: 290px;
         left: 180px;
-        font-size: 20px;
-        color: #1b9284 !important;
+        font-size: 15px;
+        color: #42519c !important;
     }
 
     .logo-eduDigital {
@@ -548,14 +548,14 @@ body {
     }
 
     .logo-semed {
-        width: 20vw;
-        top: 70vh;
+        width: 35vw;
+        top: 80vh;
         left: 280px;
     }
 
     .logo-robo {
-        width: 10vw;
-        top: 75vh;
+        width: 25vw;
+        top: 70vh;
         left: 180px;
     }
 

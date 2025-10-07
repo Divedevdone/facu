@@ -269,6 +269,9 @@ function addDataRecursos() {
 function addDataCursos() {
     window.location.href = "cursos/dados-cursos.php";
 }
+function addDataInicio() {
+    window.location.href = "index/dados-inicio.php";
+}
 
 // ✅ Event Listeners fora de qualquer função
 document.addEventListener('DOMContentLoaded', function () {

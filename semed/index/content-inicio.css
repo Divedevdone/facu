@@ -38,15 +38,6 @@ body {
 
 }
 
-.arquivos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 10px;
-    font-size: 20px;
-    width: 80px;
-}
-
 /* --- Container principal em coluna --- */
 .container {
     width: 100%;
@@ -69,7 +60,6 @@ body {
     box-shadow: 0 6px 18px rgba(15, 23, 42, 0.1);
     justify-content: center;
 }
-
 
 .alert {
     text-align: center;
@@ -355,13 +345,16 @@ textarea:focus {
 
 
 .footer-content {
+    position: fixed;
+    bottom: 0;
+    left: 0px;
+    width: 100%;
     text-align: center;
-    font-size: 13px;
-    color: #6b7280;
-    padding: 16px;
-    border-top: 1px solid #e5eaf1;
-    background: #fdfdfd;
-    left: 100px;
+    font-size: 0.9rem;
+    color: #777;
+    background-color: #f9f9f9;
+    /* opcional: cor de fundo */
+    padding: 12px 0;
 }
 
 /* Responsividade */

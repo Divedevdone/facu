@@ -1,166 +1,128 @@
+<?php
+session_start();
+include __DIR__ . '/../conexao.php'; // conexão com db-semed
+
+// Buscar todas as observações
+$observacoes = $conn->query("SELECT * FROM observacao ORDER BY criado_em DESC");
+
+
+// Buscar cronogramas
+$sql = "SELECT id, titulo, imagem, mensagem, data_evento, hora_evento, criado_em 
+        FROM cronograma 
+        ORDER BY criado_em DESC";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Começar</title>
-    <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Corpo da página */
-body, html {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f6f8;
-    color: #333;
-    margin: 0;
-    padding: 0;   /* <- remove o espaço lateral */
-    line-height: 1.6;
-    text-align: left;
-}
-
-/* Título principal */
-.titulo {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.sub {
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-/* Texto introdutório */
-body > p {
-    font-size: 1rem;
-    max-width: 100%;
-    margin-bottom: 40px;
-    text-align: left;
-}
-
-/* Destaque de recursos */
-.feature-highlight {
-    margin: 0;
-    padding: 2px;
-    width: 80%;
-    max-width: none;
-    border-left: 5px solid #3498db;
-}
-
-/* Ícone de pasta */
-.icons {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    text-align: left;
-}
-
-/* Lista de recursos */
-.recursos-lista {
-    margin-left: 0;
-    padding-left: 0;
-    text-align: left;
-}
-
-.recursos-lista ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start; /* garante alinhamento à esquerda */
-    gap: 10px;
-    list-style: none;
-    padding-left: 0;
-    margin-left: 0;
-}
-
-.recursos-lista li {
-    background-color: #ecf0f1;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.recursos-lista li:hover {
-    background-color: #d0e6f7;
-}
-
-.recursos-lista a {
-    text-decoration: none;
-    color: #2c3e50;
-    font-weight: 500;
-}
-
-/* Rodapé */
-.footer-content {
-    text-align: left;
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: 35px;
-}
-
-div, section, article, header, footer, p, span {
-    text-align: center;
-    font-size: 20px;
-}
-
-
-</style>
-    
+    <title>Cronograma</title>
+    <link rel="stylesheet" href="index/content-index.css">   
 </head>
 
 <body>
-    <p class="titulo">Secretaria</p>
-     <p class="text-content">
-            A Secretaria Municipal de Educação compete o planejamento
-            e a execução<br> 
-            da política educacional do Município, especificamente através 
-            das seguintes <br>
-            atividades: instalação e manutenção de estabelecimentos de 
-            ensino que oferecem<br>
-            a Educação Básica: Educação Infantil e Ensino Fundamental, 
-            planejamento, <br>
-            organização, administração, orientação, acompanhamento, 
-            controle e <br>
-            avaliação do sistema educacional do Município, em consonância 
-            com os sistemas <br>
-            estadual e federal de educação, bem como a adoção de medidas 
-            que visem a sua <br>
-            expansão, consolidação e aperfeiçoamento; atualização permanente 
-            da ação educativa, <br>
-            ajustando-a às realidades local e regional, pela elevação do 
-            nível da produtividade<br>
-            da educação, visando a melhoria qualitativa dos processos educativos; 
-            controle e <br>
-            fiscalização do funcionamento dos prédios e estabelecimentos de ensino 
-            a nível municipal; <br>
-            promoção da perfeita articulação com os governos estadual e federal 
-            em matéria de legislação<br>
-            da política educacional; promoção de ações integradoras com os demais órgãos 
-            componentes da <br>
-            administração pública municipal, estadual e federal, cujas atividades se 
-            inter-relacionem <br>
-            com a ação educacional; manutenção dos programas de assistência ao estudante 
-            e outras atividades<br>
-            correlatas determinadas pela Prefeita.<br><br>
+    <!-- Exibir observações aqui -->
+     🔔<strong>Avisos:</strong><br><br>
+     <?php if ($observacoes && $observacoes->num_rows > 0): ?>
+            <?php while($obs = $observacoes->fetch_assoc()): ?>
+                <br>
+                <div class="observacao-card">
+                    <div class="badge-aviso"></div>
+                    <div class="observacao-conteudo">
+                        <?php echo nl2br(htmlspecialchars($obs['observacao'])); ?>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <div class="no-observacoes">
+                <h3>📝 Nenhum aviso disponível</h3>
+                <p>Não há avisos cadastrados no momento.</p>
+            </div>
+        <?php endif; ?>
+    </div>  
+    <div class="title">Cronograma</div>
 
-            Secretaria Municipal de Educação<br>
-            Endereço: Praça 8 de Janeiro, 225<br>
-            E-mail: gabinete.semed@sjp.pr.gov.br<br>
-            Telefone: (41) 3134-4811 <br><br>
+<div class="feature-highlight">
+    <div class="recursos-lista">
+        <?php if ($result && $result->num_rows > 0): ?>
+            <div class="grid">
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <div class="item">
+                        <div class="item-header">
+                            <h3><?php echo htmlspecialchars($row['titulo']); ?></h3>
+                            <div class="event-date">
+                                <span class="date-badge">
+                                    📅 <?php echo date('d/m/Y', strtotime($row['data_evento'])); ?>
+                                </span>
+                                <span class="time-badge">
+                                    ⏰ <?php echo $row['hora_evento']; ?>
+                                </span>
+                            </div>
+                        </div>
 
-            Horário de atendimento<br>
-            Segunda a sexta-feira, das 8h às 12h e das 13h às 17h.<br><br>
+                        <?php if (!empty($row['imagem'])): ?>
+                            <div class="image-container">
+                                <img src="index/exibe_imagem.php?id=<?php echo $row['id']; ?>" alt="<?php echo htmlspecialchars($row['titulo']); ?>">
 
-            SEMED | Secretaria municipal de educação <br><br>
-        </p>  
-  
+                                <div class="image-overlay"></div>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="content">
+                            <p>
+                        <?php
+                            // Expressão regular para encontrar links (http, https, www)
+                            $urlRegex = '/(https?:\/\/[^\s]+|www\.[^\s]+)/i';
+
+                            // Usa preg_replace_callback para encontrar os links e processar o texto
+                            $mensagem_com_links = preg_replace_callback(
+                                $urlRegex,
+                                function ($matches) {
+                                    $url = $matches[0];
+                                    // Adiciona o "http://" se não houver, para garantir que o link funcione
+                                    $link_url = (strpos($url, 'http') === 0) ? $url : 'http://' . $url;
+                                    // Cria o HTML do link e aplica htmlspecialchars somente na URL e no texto do link para segurança
+                                    return '<a href="' . htmlspecialchars($link_url) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
+                                },
+                                htmlspecialchars($row['mensagem']) // Aplica htmlspecialchars para garantir que o resto do texto seja seguro
+                            );
+
+                            // Imprime o resultado, mantendo as quebras de linha
+                            echo nl2br($mensagem_com_links);
+                        ?>
+                        </p>
+                        </div>
+
+                        <div class="item-footer">
+                            <small class="created-info">
+                                ✨ Criado em <?php echo date('d/m/Y', strtotime($row['criado_em'])); ?>
+                            </small>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        <?php else: ?>
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>Nenhum cronograma disponível</h3>
+                <p>Os próximos eventos aparecerão aqui quando forem cadastrados.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+    <div class="footer-content">
+        <p>SEMED | Secretaria Municipal de Educação</p>
+    </div>
+
+    <!-- Botão de lápis fixo -->
+    <?php if (isset($_SESSION["usuario"])): ?>
+    <div class="btn-add" onclick="addDataInicio()" data-autor="🤖 RoboEdu:" data-fala="Editar">
+        <span id="btn-icon">✏️</span>
+    </div>
+    <input type="file" id="hiddenUpload" style="display:none" />
+    <?php endif; ?>
+    <br><br><br>
 </body>
-
 </html>

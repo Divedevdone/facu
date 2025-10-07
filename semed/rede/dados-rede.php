@@ -1,201 +1,268 @@
+<?php
+session_start();
+include __DIR__ . '/../conexao.php'; // conexão com db-semed
+
+
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// --- EXCLUSÃO ---
+if (isset($_GET['delete'])) {
+    $id = intval($_GET['delete']);
+
+    $sql = "DELETE FROM rede WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        // Redireciona para evitar "refresh duplicado"
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } else {
+        echo "<p style='color:red'>Erro ao excluir: " . $conn->error . "</p>";
+    }
+}
+$titulo   = trim($_POST['titulo'] ?? ''); // sempre pega o título
+$mensagem = trim($_POST['mensagem'] ?? ''); // se não enviar nada, vira string vazia
+
+// --- PROCESSAMENTO DO FORMULÁRIO ---
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $titulo   = trim($_POST['titulo'] ?? '');
+    $mensagem = trim($_POST['mensagem'] ?? '');
+
+    // Valores padrão
+    $conteudoImg = null;
+    $tipoImg     = null;
+    $conteudoArq = null;
+    $nomeArq     = null;
+    $tipoArq     = null;
+    $conteudoCapa = null;
+    $tipoCapa     = null;
+
+    // Se enviou imagem "normal"
+    if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
+        $conteudoImg = file_get_contents($_FILES['imagem']['tmp_name']);
+        $tipoImg     = $_FILES['imagem']['type'];
+    }
+
+    // Se enviou arquivo
+    if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === UPLOAD_ERR_OK) {
+        $conteudoArq = file_get_contents($_FILES['arquivo']['tmp_name']);
+        $nomeArq     = $_FILES['arquivo']['name'];
+        $tipoArq     = $_FILES['arquivo']['type'];
+    }
+
+    // Se enviou capa opcional
+    if (isset($_FILES['capa']) && $_FILES['capa']['error'] === UPLOAD_ERR_OK) {
+        $conteudoCapa = file_get_contents($_FILES['capa']['tmp_name']);
+        $tipoCapa     = $_FILES['capa']['type'];
+    }
+
+    // Ajustar a query para incluir capa
+    $sql = "INSERT INTO rede 
+                (titulo, mensagem, imagem, tipo_imagem, arquivo, nome_arquivo, tipo_arquivo, capa, tipo_capa, criado_em) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Erro na preparação da query: " . $conn->error);
+    }
+
+    // Adaptação: mais 2 parâmetros para capa
+    $stmt->bind_param(
+        "sssssssss",
+        $titulo,
+        $mensagem,
+        $conteudoImg,
+        $tipoImg,
+        $conteudoArq,
+        $nomeArq,
+        $tipoArq,
+        $conteudoCapa,
+        $tipoCapa
+    );
+
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>✅ Salvo com sucesso!</div>";
+    } else {
+        echo "<div class='alert alert-error'>❌ Erro ao salvar: " . $stmt->error . "</div>";
+    }
+
+    $stmt->close();
+}
+
+// Buscar
+$result = $conn->query("SELECT * FROM rede ORDER BY criado_em DESC");
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Projetos da rede</title>
-    <link rel="stylesheet" href="../content-dados.css">  
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projetos do Núcleo</title>
+    <link rel="stylesheet" href="../content-dados.css">
+    <link rel="icon" type="image/png" href="../favicon.png">
 </head>
-
 <body>
-    </div>
-    <div>
-        <img src="../semed.png" alt="Logo SEMED" class="logo-semed">
-        <div style="font-size: 0.8rem; margin-top: 0rem;"></div>
-    </div>
-    <br><br>
-    <main>
-        <h2>Projetos da rede</h2>
-        <p class="subtitulo">
-            Iniciativas e projetos desenvolvidos pela rede municipal de ensino em educação digital.
-        </p>
-
-        <div id="resultado">
-            <strong>Status:</strong>
-            <div id="statusText">Nenhum sendo realizado.</div>
-            <div id="progressoContainer">
-                <div id="barraProgresso">
-                    <div id="barraProgressoInner"></div>
-                </div>
-                <div id="percent">0%</div>
+    
+   <div class="container">
+    <div class="form-container">
+        <h1><img src="../semed.png" alt="Logo SEMED" class="logo-semed"></h1>           
+        <!-- FORMULÁRIO -->
+        <form action="" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <h1>Projetos do Núcleo</h1>
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" name="titulo" placeholder="Digite o título do evento..." required>
             </div>
+
+            <div class="form-group">
+                <label for="imagem">Imagem</label>
+                <div class="file-input">
+                    <input type="file" id="imagem" name="imagem" accept="image/*">
+                    <label for="imagem" class="file-input-label">
+                        📎 Clique para selecionar uma imagem
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mensagem">Descrição</label>
+                <textarea id="mensagem" name="mensagem" placeholder="Descreva os detalhes do evento..."></textarea>
+            </div>
+            <button type="submit" class="btn-submit">💾 Salvar</button>
+        </form>
+    </div>
+
+    <!-- LISTA  -->
+<div class="lista">
+       <!-- FORMULÁRIO -->
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="arquivo">Arquivo</label>
+        <div class="file-input">
+            <input type="file" id="arquivo" name="arquivo" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+            <label for="arquivo" class="file-input-label">
+                📂 Clique para selecionar um arquivo
+            </label>
+            <span id="nome-arquivo" class="nome-arquivo"></span>
         </div>
+    </div>
 
-        <h3>Arquivos enviados</h3>
-        <ul id="listaArquivos"></ul>
-    </main>
+    <!-- NOVO CAMPO: Imagem de capa -->
+    <div class="form-group">
+        <label for="capa">Imagem de Capa (opcional)</label>
+        <div class="file-input">
+            <input type="file" id="capa" name="capa" accept="image/*">
+            <label for="capa" class="file-input-label">
+                🖼️ Clique para selecionar uma capa
+            </label>
+            <span id="nome-capa" class="nome-arquivo"></span>
+        </div>
+    </div>
 
-    <script>
-        function carregarArquivos() {
-            fetch("lista-rede.php")
-                .then(r => r.json())
-                .then(arquivos => {
-                    let lista = document.getElementById("listaArquivos");
-                    lista.innerHTML = "";
-                    arquivos.forEach(a => {
-                        let li = document.createElement("li");
+    <button type="submit" class="btn-submit">💾 Salvar</button>
+</form>
 
-                        // link do arquivo
-                        li.innerHTML = `<a href="${a.url}" target="_blank">${a.nome}</a>`;
+<script>
+    const inputArquivo = document.getElementById('arquivo');
+    const nomeArquivo = document.getElementById('nome-arquivo');
+    const inputCapa = document.getElementById('capa');
+    const nomeCapa = document.getElementById('nome-capa');
 
-                        // botão lixeira
-                        let btn = document.createElement("button");
-                        btn.textContent = "🗑️";
-                        btn.style.marginLeft = "10px";
-                        btn.style.cursor = "pointer";
-                       btn.onclick = function () {
-    if (confirm("Tem certeza que deseja excluir este arquivo?")) {
-        fetch("delete-rede.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "id=" + encodeURIComponent(a.id)
-        })
-        .then(r => r.json())
-        .then(res => {
-            if (res.status === "ok") {
-                alert("Arquivo excluído com sucesso!");
-                carregarArquivos();
-            } else {
-                alert("Erro: " + res.msg);
-            }
-        })
-        .catch(err => alert("Erro na conexão: " + err));
-    }
-};
+    inputArquivo.addEventListener('change', function () {
+        nomeArquivo.textContent = inputArquivo.files.length > 0 
+            ? `📄 ${inputArquivo.files[0].name}` 
+            : '';
+    });
 
-                        li.appendChild(btn);
-                        lista.appendChild(li);
-                    });
-                })
-                .catch(err => console.error("Erro ao carregar lista:", err));
-        }
+    inputCapa.addEventListener('change', function () {
+        nomeCapa.textContent = inputCapa.files.length > 0 
+            ? `🖼️ ${inputCapa.files[0].name}` 
+            : '';
+    });
+</script>
 
-        // chama logo ao abrir a página
-        carregarArquivos();
-    </script>
+        <br><br>
+     <h2>Conteúdo</h2>
+    <div class="grid">
+        <?php if ($result->num_rows > 0): ?>
+            <?php while($row = $result->fetch_assoc()): ?>
+                <div class="item">
+                    <a class="delete" href="?delete=<?php echo $row['id']; ?>" onclick="return confirm('Deseja realmente excluir?')" title="Excluir">×</a>
+                    
+<!-- Exibir CAPA (prioridade máxima) -->
+<?php if (!empty($row['capa'])): ?>
+    <img src="data:<?php echo $row['tipo_capa']; ?>;base64,<?php echo base64_encode($row['capa']); ?>" alt="Capa do arquivo">
 
-    <!-- input file oculto (é acionado pelo botão flutuante) -->
-    <input type="file" id="arquivoInput" name="arquivo" style="display:none" />
+<!-- Senão, exibir IMAGEM comum -->
+<?php elseif (!empty($row['imagem'])): ?>
+    <img src="data:<?php echo $row['tipo_imagem']; ?>;base64,<?php echo base64_encode($row['imagem']); ?>" alt="Imagem do evento">
 
-    <!-- botão flutuante criado por JS (mas deixamos a estrutura para acessibilidade) -->
-    <button id="fab" class="fab" aria-label="Enviar arquivo">+</button>
-    <div id="fabLabel" class="fabLabel">Enviar arquivo</div>
-         <!-- Botão flutuante para voltar ao início -->
-    <a href="../index.php#rede.php" id="backToTop-voltar" class="fab-voltar" aria-label="Voltar">⬅</a>
+<!-- Senão, se houver ARQUIVO, exibe ícone conforme extensão -->
+<?php elseif (!empty($row['arquivo'])): ?>
+    <div class="arquivos">
+        <?php
+            $ext = strtolower(pathinfo($row['nome_arquivo'], PATHINFO_EXTENSION));
+            $icones = [
+                'pdf'  => '../icons/pdf.png',
+                'doc'  => '../icons/doc.png',
+                'docx' => '../icons/doc.png',
+                'xls'  => '../icons/xls.png',
+                'xlsx' => '../icons/xls.png',
+                'ppt'  => '../icons/ppt.png',
+                'pptx' => '../icons/ppt.png',
+                'txt'  => '../icons/txt.png'
+            ];
+            $icone = $icones[$ext] ?? '../icons/file.png';
+        ?>
+        <div class="arquivo">
+            <img src="<?= $icone ?>" alt="<?= $ext ?>">
+        </div>
+    </div>
+<?php endif; ?>
+
+<p><?php echo nl2br(htmlspecialchars($row['mensagem'])); ?></p>
+
+<small>
+    ✏️ <strong>Criado em:</strong> <?php echo date('d/m/Y H:i', strtotime($row['criado_em'])); ?>
+</small>
+</div>
+<?php endwhile; ?>
+<?php else: ?>
+    <div class="no-items">
+        <p>📝 Nenhum conteúdo foi adicionado ainda.</p>
+        <p>Utilize o formulário acima para criar o primeiro!</p>
+    </div>
+<?php endif; ?>
+</div>
+
+    <br><br><br><br>
+          <!-- Botão flutuante para voltar ao início -->
+    <a href="../index.php#index.php" id="backToTop-voltar" class="fab-voltar" aria-label="Voltar">⬅</a>
     <div id="backToTopLabel-voltar" class="fabLabel-voltar">Voltar para início</div>
-
+    <!--footer-->
+    <div class="footer-content">
+        <p>SEMED | Secretaria Municipal de Educação</p>
+    </div>
     <script>
-        (function () {
-            const fab = document.getElementById('fab');
-            const fabLabel = document.getElementById('fabLabel');
-            const fileInput = document.getElementById('arquivoInput');
-            const statusText = document.getElementById('statusText');
-            const progressoContainer = document.getElementById('progressoContainer');
-            const barraInner = document.getElementById('barraProgressoInner');
-            const percentText = document.getElementById('percent');
-
-            // Mostra label ao passar o mouse (útil em desktop)
-            fab.addEventListener('mouseenter', () => fabLabel.style.display = 'block');
-            fab.addEventListener('mouseleave', () => fabLabel.style.display = 'none');
-
-            // Quando clicar no FAB, abre o seletor de arquivos
-            fab.addEventListener('click', () => fileInput.click());
-
-            // Ao escolher arquivo, realiza o upload via XHR para ter progresso
-            fileInput.addEventListener('change', function () {
-                const file = this.files[0];
-                if (!file) return;
-
-                // Atualiza UI
-                statusText.innerHTML = `Pronto para enviar: <strong>${escapeHtml(file.name)}</strong> (${formatBytes(file.size)})`;
-                progressoContainer.style.display = 'block';
-                barraInner.style.width = '0%';
-                percentText.innerText = '0%';
-
-                // Prepara FormData
-                const fd = new FormData();
-                fd.append('arquivo', file);
-
-                // Usa XMLHttpRequest para acompanhar progresso do upload
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'upload-rede.php', true);
-
-                xhr.upload.onprogress = function (e) {
-                    if (e.lengthComputable) {
-                        const pct = Math.round((e.loaded / e.total) * 100);
-                        barraInner.style.width = pct + '%';
-                        percentText.innerText = pct + '%';
-                    }
-                };
-
-                xhr.onload = function () {
-                    try {
-                        const res = JSON.parse(xhr.responseText);
-                        if (xhr.status >= 200 && xhr.status < 300 && res.status === 'ok') {
-                            statusText.innerHTML = `<span style="color:green">✔ Enviado com sucesso:</span><br>
-                Nome: <strong>${escapeHtml(res.nome)}</strong><br>
-                Tipo: <strong>${escapeHtml(res.tipo)}</strong>`;
-
-                            // RECARREGA A LISTA DE ARQUIVOS
-                            carregarArquivos();
-
-                        } else {
-                            statusText.innerHTML = `<span style="color:red">✖ Erro no upload.</span><br>${escapeHtml((res && res.msg) || xhr.responseText)}`;
-                        }
-                    } catch (err) {
-                        statusText.innerHTML = `<span style="color:red">✖ Resposta inválida do servidor.</span><br>${escapeHtml(xhr.responseText)}`;
-                    }
-                    fileInput.value = '';
-                };
-                //location.reload();
-
-                xhr.onerror = function () {
-                    statusText.innerHTML = `<span style="color:red">✖ Falha na conexão.</span>`;
-                    fileInput.value = '';
-                };
-
-                // Envia
-                xhr.send(fd);
-
-                // Mostra mensagem inicial
-                statusText.innerHTML = `Enviando <strong>${escapeHtml(file.name)}</strong>...`;
-            });
-
-            // util: formatar bytes
-            function formatBytes(bytes, decimals = 2) {
-                if (bytes === 0) return '0 B';
-                const k = 1024;
-                const dm = decimals < 0 ? 0 : decimals;
-                const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        // Função para melhorar a experiência do usuário
+        document.getElementById('imagem').addEventListener('change', function(e) {
+            const label = document.querySelector('.file-input-label');
+            if (e.target.files.length > 0) {
+                label.textContent = `📷 ${e.target.files[0].name}`;
+                label.style.color = '#667eea';
+            } else {
+                label.textContent = '📎 Clique para selecionar uma imagem';
+                label.style.color = '#6c757d';
             }
-
-            // util: escapar HTML para exibir nomes seguros
-            function escapeHtml(str) {
-                if (!str) return '';
-                return String(str)
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#39;');
-            }
-
-        })();
+        });
+        
     </script>
 </body>
-
 </html>
+
+<?php $conn->close(); ?>
